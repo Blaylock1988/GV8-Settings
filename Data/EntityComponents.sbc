@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Definitions xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+	<EntityComponents>
+		<EntityComponent xsi:type="MyObjectBuilder_InventoryComponentDefinition">
+			<Id>
+				<TypeId>Inventory</TypeId>
+				<SubtypeId>SafeZoneBlock</SubtypeId>
+			</Id>
+			<Volume>0.05</Volume>
+			<InputConstraint IsWhitelist="true">
+				<Entry>
+					<TypeId>Component</TypeId>
+					<SubtypeId>ZoneChip</SubtypeId>
+				</Entry>
+			</InputConstraint>
+		</EntityComponent>
+	</EntityComponents>
+</Definitions>

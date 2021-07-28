@@ -41,8 +41,8 @@ namespace MikeDude.ArmorBalance
 		public const float jumpDrivePCUMult = 0.00075f;
 		public const float cargoPCUMult = 1.1f;
 		public const float gasTankPCUMult = 0.00003f;
-		public const float thrusterPCUMult = 0.00001f;
-		public const float suspensionPCUMult = 0.0005f;
+		public const float thrusterPCUMult = 0.0000075f;
+		public const float suspensionPCUMult = 0.00025f;
 		public const float toolPCUMult = 250f;
 
         public const int gravityGeneratorPCU = 60;

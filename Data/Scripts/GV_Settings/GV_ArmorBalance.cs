@@ -54,6 +54,13 @@ namespace MikeDude.ArmorBalance
 		public const int blastDoorPCU = 1;
 		public const int gyroPCU = 1;
 		public const int projectorPCU = 500;
+
+		//JumpDrive Stuff
+		public const float jdInput = 16;
+		public const float jdJumpPower = 1;
+		public const double jdMaxRange = 50000;
+		public const double jdMaxMass = 1000000;
+		public const float jdDelay = 10f;
 		
 		
         private bool isInit = false;
@@ -276,7 +283,21 @@ namespace MikeDude.ArmorBalance
 				//Thrusters
                 if (thrustDef != null)
                 {
-					float newPCU = thrustDef.ForceMagnitude * thrusterPCUMult;
+						var epsteinMult = 1f;
+						if (thrustDef.Id.SubtypeName.Contains("ARYLNX_"))
+						{
+							thrustDef.MinPlanetaryInfluence = 0f;
+							thrustDef.MaxPlanetaryInfluence = 1f;
+							thrustDef.EffectivenessAtMaxInfluence = 0.7f;
+							thrustDef.EffectivenessAtMinInfluence = 1f;
+							thrustDef.NeedsAtmosphereForInfluence = false; //bool
+							thrustDef.ConsumptionFactorPerG = 2f;
+							thrustDef.MaxPowerConsumption = thrustDef.ForceMagnitude * 0.000001f;
+							thrustDef.MinPowerConsumption = thrustDef.ForceMagnitude * 0.000000001f;
+							thrustDef.SlowdownFactor = 1f;
+							epsteinMult = 1.5f;
+						}
+					float newPCU = thrustDef.ForceMagnitude * thrusterPCUMult * epsteinMult;
 					thrustDef.PCU = (int) MathHelper.Clamp(newPCU,1f,1000000f);			
                 }
 				//Suspension
@@ -288,7 +309,41 @@ namespace MikeDude.ArmorBalance
 				//JumpDrives
                 if (jumpDriveDef != null)
                 {
-					float newPCU = (float) jumpDriveDef.MaxJumpDistance * jumpDrivePCUMult;
+
+					float newjdInput = jdInput;
+					float newjdJumpPower = jdJumpPower;
+					double newjdMaxRange = jdMaxRange;
+					double newjdMaxMass = jdMaxMass;
+					float newjdDelay = jdDelay;
+
+                    if (jumpDriveDef.CubeSize == MyCubeSize.Large)
+                    {			
+
+						if (jumpDriveDef.Id.SubtypeName.Contains("_LR"))
+						{
+							newjdInput = jdInput * 4;
+							newjdJumpPower = jdJumpPower * 8;
+							newjdMaxRange = jdMaxRange * 40;
+							newjdMaxMass = jdMaxMass * 1.25f;
+							newjdDelay = jdDelay * 6;
+						}
+                    }
+                    if (jumpDriveDef.CubeSize == MyCubeSize.Small)
+                    {
+                        newjdInput = jdInput;
+                        newjdJumpPower = jdJumpPower * 0.5f;
+                        newjdMaxRange = (double) jdMaxRange * 0.5f;
+                        newjdMaxMass = (double) jdMaxMass * 0.1f;
+                        newjdDelay = jdDelay;
+                    }
+
+					jumpDriveDef.RequiredPowerInput = newjdInput; //float
+					jumpDriveDef.PowerNeededForJump = newjdJumpPower; //float
+					jumpDriveDef.MaxJumpDistance = newjdMaxRange; //double
+					jumpDriveDef.MaxJumpMass = newjdMaxMass; //double
+					jumpDriveDef.JumpDelay = newjdDelay; //float
+					
+					float newPCU = (float) jumpDriveDef.MaxJumpDistance * jumpDrivePCUMult + 100;					
 					jumpDriveDef.PCU = (int) MathHelper.Clamp(newPCU,1f,1000000f);	
 				}					
 				//Gyros
